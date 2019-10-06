@@ -1,0 +1,6 @@
+/**
+ * @author RibozymeR
+ *
+ */
+module thirscript {
+}
