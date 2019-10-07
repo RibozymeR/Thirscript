@@ -3,7 +3,7 @@ package thirscript;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import thirscript.exec.Expr;
+import thirscript.expr.Expr;
 import thirscript.parse.Lexer;
 import thirscript.parse.Parser;
 

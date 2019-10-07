@@ -21,12 +21,12 @@ import java.util.Iterator;
 
     private Token token(TokenType type)
     {
-        return new Token(type, yychar);
+        return new Token(type, yyline, yycolumn);
     }
     
     private Token text_token(TokenType type)
     {
-        return new Token(type, yychar, yytext());
+        return new Token(type, yyline, yycolumn, yytext());
     }
     
     public Iterator<Token> iterator()
@@ -75,9 +75,6 @@ IntLiteral = 0 | [1-9][0-9]*
   "if"      { return token(TokenType.IF); }
   "else"    { return token(TokenType.ELSE); }
   "while"   { return token(TokenType.WHILE); }
-  
-  /* print */
-  "print"   { return token(TokenType.PRINT); }
 
   /* literals */
   
@@ -87,7 +84,9 @@ IntLiteral = 0 | [1-9][0-9]*
   /* separators */
   
   "."           { return token(TokenType.PERIOD); }
+  ","           { return token(TokenType.COMMA); }
   "="           { return token(TokenType.ASSIGN); }
+  "#"           { return token(TokenType.FUNC); } 
   "("           { return token(TokenType.LPAREN); }
   ")"           { return token(TokenType.RPAREN); }
   "{"           { return token(TokenType.LBRACE); }

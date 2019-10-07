@@ -4,24 +4,25 @@ import java.util.Arrays;
 
 public class Token
 {
-    public static final Token EOF = new Token(TokenType.EOF, -1);
+    public static final Token EOF = new Token(TokenType.EOF, -1, -1);
 
     final TokenType type;
-    final int pos;
+    final int line, column;
     final String value;
 
-    protected Token(TokenType type, int pos)
+    protected Token(TokenType type, int line, int column)
     {
-        this(type, pos, null);
+        this(type, line, column, null);
     }
 
-    protected Token(TokenType type, int pos, String value)
+    protected Token(TokenType type, int line, int column, String value)
     {
         if (type == TokenType.IDENTIFIER && Arrays.binarySearch(TokenType.reserved, value) >= 0)
-            throw new IllegalArgumentException("Identifier token (" + pos + ") cannot be keyword");
+            throw new IllegalArgumentException("Identifier token at " + line + ":" + column + " cannot be keyword");
 
         this.type = type;
-        this.pos = pos;
+        this.line = line;
+        this.column = column;
         this.value = value;
     }
 
@@ -43,11 +44,17 @@ public class Token
             return type.toString();
     }
 
+    public String getPos()
+    {
+        return String.format("%d:%d", line, column);
+    }
+
     public static enum TokenType {
         IDENTIFIER, /* identifier */
         PERIOD, /* '.' */
+        COMMA, /* ',' */
         INT, /* int literal */
-        PRINT, /* print */
+        FUNC, /* '#' */
         ASSIGN, /* '=' */
         IF, ELSE, WHILE, /* keywords */
         OP, /* + - * / % & | ^ ~ == < <= > >= != */

@@ -5,17 +5,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import thirscript.exec.AssignExpr;
-import thirscript.exec.BlockExpr;
-import thirscript.exec.CmpExpr;
-import thirscript.exec.IfExpr;
-import thirscript.exec.IntLiteral;
-import thirscript.exec.Expr;
-import thirscript.exec.OpExpr;
-import thirscript.exec.PrintExpr;
-import thirscript.exec.UnaryOpExpr;
-import thirscript.exec.VarExpr;
-import thirscript.exec.WhileExpr;
+import thirscript.expr.AssignExpr;
+import thirscript.expr.BlockExpr;
+import thirscript.expr.CmpExpr;
+import thirscript.expr.Expr;
+import thirscript.expr.IfExpr;
+import thirscript.expr.IntLiteral;
+import thirscript.expr.OpExpr;
+import thirscript.expr.UnaryOpExpr;
+import thirscript.expr.VarExpr;
+import thirscript.expr.WhileExpr;
 import thirscript.parse.Token.TokenType;
 
 public class Parser
@@ -73,12 +72,6 @@ public class Parser
                 n = new AssignExpr(v, parseCmp());
             } else
                 n = v;
-        } else if (type == TokenType.PRINT)
-        {
-            next();
-            assertType(next(), TokenType.LPAREN);
-            n = new PrintExpr(parseCmp());
-            assertType(next(), TokenType.RPAREN);
         } else if (type == TokenType.IF)
         {
             next();
@@ -103,7 +96,7 @@ public class Parser
 
             n = new WhileExpr(test, parseCmp());
         } else
-            throw new ParseException("Not a valid statement at " + t.pos);
+            throw new ParseException("Not a valid statement at " + t.getPos());
 
         if (pre_op.size() > 0)
         {
@@ -121,7 +114,8 @@ public class Parser
         Token t = get();
         if (t.type == TokenType.OP)
         {
-            if ("== < <= > >= !=".indexOf(t.value) == -1) throw new ParseException("Not a valid operator at " + t.pos);
+            if ("== < <= > >= !=".indexOf(t.value) == -1)
+                throw new ParseException("Not a valid operator at " + t.getPos());
             next();
             return new CmpExpr(n, parseSum(), t.value);
         } else
@@ -180,7 +174,7 @@ public class Parser
         if (token.type == type)
             return true;
         else
-            throw new ParseException("Token at " + token.pos + " (" + token.type + ") should be " + type);
+            throw new ParseException("Token at " + token.getPos() + " (" + token.type + ") should be " + type);
     }
 
     public Expr parse(Iterator<Token> tokens)

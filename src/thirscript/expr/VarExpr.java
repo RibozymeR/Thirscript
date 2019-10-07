@@ -1,4 +1,4 @@
-package thirscript.exec;
+package thirscript.expr;
 
 import java.util.Map;
 
@@ -13,6 +13,8 @@ public class VarExpr implements Expr
 
     public long eval(Map<String, Long> env)
     {
+        if(!env.containsKey(var))
+            throw new RuntimeException("No variable named \"" + var + "\"");
         return env.get(var);
     }
 

@@ -4,8 +4,9 @@
         "(" , cmp , ")"
         | "{" , { cmp } , "}"
         | INT
+        | "#" , "(" , [ IDENTIFIER , { "," , IDENTIFIER } ] , ")" , cmp
         | var , [ "=" , cmp ]
-        | print '(' cmp ')'
+        | ( var | "(" , cmp , ")" ) , "(" , [ cmp , { "," , cmp } ] , ")"
         | if_expr
         | while_expr
     ) ;

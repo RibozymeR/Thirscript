@@ -1,4 +1,4 @@
-package thirscript.exec;
+package thirscript.expr;
 
 import java.util.Map;
 
