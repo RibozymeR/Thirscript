@@ -13,10 +13,10 @@ public class ThInteger extends ThObject
      *  }
      */
 
+    private static Map<Long, ThInteger> cache = new TreeMap<>();
+
     public static final ThInteger TRUE = valueOf(-1);
     public static final ThInteger FALSE = valueOf(0);
-
-    private static Map<Long, ThInteger> cache = new TreeMap<>();
 
     public final long value;
 
@@ -33,6 +33,11 @@ public class ThInteger extends ThObject
     public long istrue()
     {
         return value;
+    }
+
+    public String toString()
+    {
+        return Long.toString(value);
     }
 
     public static ThInteger valueOf(long v)

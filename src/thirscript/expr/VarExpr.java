@@ -33,21 +33,23 @@ public class VarExpr implements Expr
 
     public void set(ThObject value, Map<String, Var> env, boolean constant)
     {
-        throw new RuntimeException();
-        /*Var v = env.get(var);
+        //System.out.println("set " + this + " to " + value);
+        Var v = env.get(var);
         for (String sub : subpath)
         {
+            if (v == null) throw new RuntimeException("No variable \"" + v);
             ThObject o = v.getValue();
             Var nv = o == null ? ThObject.NULL : o.getVar(sub);
-            if (nv == null) throw new RuntimeException("No variable named \"" + sub + "\" in " + v);
             v = nv;
         }
-        if (v != null && !constant) v.setValue(value);
-        env.put(var, Var.newVar(value, constant));*/
+        if (v != null && !constant)
+            v.setValue(value);
+        else
+            env.put(var, Var.newVar(value, constant));
     }
 
     public String toString()
     {
-        return var;
+        return subpath.length > 0 ? String.format("%s.%s", var, String.join(".", subpath)) : var;
     }
 }

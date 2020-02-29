@@ -24,20 +24,27 @@ public class ThObject
 
     static
     {
-        Map<String, Var> vars = new HashMap<>();
-        vars.put("true", new Var(new ThFunction(new IntLiteral(ThInteger.TRUE), List.of())));
-        OBJECT = new ThObject(Collections.emptySet(), vars);
+        OBJECT = new ThObject();
+        OBJECT.vars.put("_native", Var.constant(ThInteger.FALSE));
+        OBJECT.vars.put("true", new Var(new ThFunction(new IntLiteral(ThInteger.TRUE), List.of())));
     }
 
     public final Set<ThObject> protos;
     public final Map<String, Var> vars;
 
+    // bootstrapping compiler
+    private ThObject()
+    {
+        protos = Collections.emptySet();
+        vars = new HashMap<>();
+        vars.put("_", Var.constant(this));
+    }
+
     public ThObject(Collection<ThObject> protos, Map<String, Var> new_vars)
     {
-        this.protos = Set.copyOf(protos);
+        this.protos = protos == null || protos.isEmpty() ? Set.of(OBJECT) : Set.copyOf(protos);
 
-        vars = new HashMap<>();
-        vars.putAll(new_vars);
+        vars = new HashMap<>(new_vars);
         vars.put("_native", Var.constant(ThInteger.FALSE));
         vars.put("_", Var.constant(this));
     }

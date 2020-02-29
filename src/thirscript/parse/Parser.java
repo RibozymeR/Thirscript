@@ -241,7 +241,8 @@ public class Parser
         assertType(t, TokenType.IDENTIFIER);
         String var = t.value;
         List<String> path = new ArrayList<>();
-        while(get().type == TokenType.PERIOD) {
+        while (get().type == TokenType.PERIOD)
+        {
             next();
             t = next();
             assertType(t, TokenType.IDENTIFIER);

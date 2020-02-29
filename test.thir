@@ -16,8 +16,12 @@ Stack = new(Object)
     init = #(v) new(Stack){ value = v }
     push = #(v) new(Stack){ value = v next = _ }
     
-    print = #() {
-        if(next != null) next.print()
+    printl = #() {
+        if(next != null) next.printl()
         print(value)
     }
 }
+
+s = Stack.init(5)
+s = s.push(7)
+s.printl()

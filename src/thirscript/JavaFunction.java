@@ -65,13 +65,19 @@ public class JavaFunction extends ThObject implements IFunction
 
         try
         {
-            func.invoke(args);
+            // TODO arg, not arg[0]
+            func.invoke(args[0]);
             return ThInteger.TRUE;
         } catch (Throwable e)
         {
             e.printStackTrace();
         }
         return ThInteger.FALSE;
+    }
+
+    public String toString()
+    {
+        return "J:" + func;
     }
 
     public static Object convert(ThObject thobj, Class<?> clazz)

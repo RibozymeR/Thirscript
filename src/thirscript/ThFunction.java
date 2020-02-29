@@ -17,18 +17,18 @@ public class ThFunction extends ThObject implements IFunction
      */
 
     final Expr func;
-    final List<String> arg_names;
+    final String[] arg_names;
 
     public ThFunction(Expr func, List<String> arg_names)
     {
         super(Set.of(OBJECT), Collections.emptyMap());
         this.func = func;
-        this.arg_names = Collections.unmodifiableList(arg_names);
+        this.arg_names = arg_names.toArray(new String[0]);
     }
 
     public boolean can_eval(List<ThObject> arg_types)
     {
-        if (arg_types.size() != arg_names.size()) return false;
+        if (arg_types.size() != arg_names.length) return false;
         // TODO should not always be true ?
         return true;
     }
@@ -40,9 +40,14 @@ public class ThFunction extends ThObject implements IFunction
          * new_env.remove("_"); if (thiso != null) new_env.put("_", Var.constant(thiso));
          */
 
-        for (int i = 0; i < arg_names.size(); ++i)
-            new_env.put(arg_names.get(i), new Var(args.get(i)));
+        for (int i = 0; i < arg_names.length; ++i)
+            new_env.put(arg_names[i], new Var(args.get(i)));
 
         return func.eval(new_env);
+    }
+
+    public String toString()
+    {
+        return String.format("#(%s)%s", String.join(",", arg_names), func);
     }
 }

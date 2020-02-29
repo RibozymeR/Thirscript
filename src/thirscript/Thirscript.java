@@ -39,11 +39,12 @@ public class Thirscript
         {
             MethodType print_t = MethodType.methodType(void.class, Object.class);
             MethodHandle print = MethodHandles.lookup().findVirtual(PrintStream.class, "println", print_t);
+            print = MethodHandles.insertArguments(print, 0, System.out);
             print = print.asType(print_t.changeParameterType(0, ThObject.class));
             print = MethodHandles.filterReturnValue(print, MethodHandles.constant(ThObject.class, ThInteger.TRUE));
             start.put("print", Var.constant(new JavaFunction(print)));
         }
 
-        // System.out.println(n.eval(start));
+        System.out.println(n.eval(start));
     }
 }

@@ -26,7 +26,7 @@ public class Var
     
     public void setValue(ThObject value)
     {
-        if(constant) throw new UnsupportedOperationException("Cannot set constant");
+        if (constant) throw new UnsupportedOperationException("Cannot set constant");
         this.value = value;
     }
 
