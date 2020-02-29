@@ -1,8 +1,12 @@
 package thirscript.expr;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import thirscript.ThObject;
+import thirscript.Var;
 
 public class BlockExpr implements Expr
 {
@@ -13,11 +17,15 @@ public class BlockExpr implements Expr
         this.children = new ArrayList<>(List.of(children));
     }
 
-    public long eval(Map<String, Long> env)
+    public ThObject eval(Map<String, Var> env)
     {
-        long v = 0;
+        Map<String, Var> nenv = new HashMap<>(env);
+        // TODO replace null
+        ThObject v = null;
         for (Expr n : children)
-            v = n.eval(env);
+            v = n.eval(nenv);
+        for (String var : env.keySet())
+            if (nenv.get(var) != env.get(var)) env.put(var, nenv.get(var));
         return v;
     }
 
@@ -28,9 +36,12 @@ public class BlockExpr implements Expr
 
     public String toString()
     {
-        StringBuilder sb = new StringBuilder("(body ");
+        StringBuilder sb = new StringBuilder("(body");
         for (Expr n : children)
-            sb.append(" " + n);
+        {
+            sb.append(' ');
+            sb.append(n);
+        }
         sb.append(')');
 
         return sb.toString();

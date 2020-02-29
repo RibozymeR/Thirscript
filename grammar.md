@@ -1,17 +1,22 @@
     program = { cmp } ;
 
     expr = { "+" | "-" | "~" | "!" } , (
-        "(" , cmp , ")"
+        "(" , cmp , ")" , [ eval ]
         | "{" , { cmp } , "}"
         | INT
-        | "#" , "(" , [ IDENTIFIER , { "," , IDENTIFIER } ] , ")" , cmp
-        | var , [ "=" , cmp ]
-        | ( var | "(" , cmp , ")" ) , "(" , [ cmp , { "," , cmp } ] , ")"
+        | STRING
+        | lambda
+        | new_obj
+        | var , [ ( "=" | ":=" ) , cmp | eval ]
         | if_expr
         | while_expr
     ) ;
+    eval = "(" , [ cmp , { "," , cmp } ] , ")" ;
+    
+    lambda = "#" , "(" , [ IDENTIFIER , { "," , IDENTIFIER } ] , ")" , cmp ;         # function arguments cannot be called "_"
+    new_obj = "new" , "(" , [ expr , { "," , expr } ] , ")" , "{" , { var , ( "=" | ":=" ) , cmp } , "}" ;
 
-    var = IDENTIFIER ;
+    var = IDENTIFIER , { '.' , IDENTIFIER } ;
 
     if_expr = "if" , "(" , cmp , ")" , cmp , [ "else" , cmp ] ;
     while_expr = "while" , "(" , cmp , ")" , cmp ;
@@ -23,6 +28,7 @@
     IDENTIFIER = [_a-zA-Z][_0-9a-zA-Z]*
     
     INT = 0 | [1-9][0-9]*
+    STRING = '[^\r\n]*'
     
     CMP_OP = [<>] | [=!<>]=
     SUM_OP = [+-&|^]

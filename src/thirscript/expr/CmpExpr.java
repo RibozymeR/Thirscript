@@ -2,6 +2,10 @@ package thirscript.expr;
 
 import java.util.Map;
 
+import thirscript.ThInteger;
+import thirscript.ThObject;
+import thirscript.Var;
+
 public class CmpExpr implements Expr
 {
     final Expr left, right;
@@ -14,9 +18,19 @@ public class CmpExpr implements Expr
         cmp = op;
     }
 
-    public long eval(Map<String, Long> env)
+    public ThObject eval(Map<String, Var> env)
     {
-        long l = left.eval(env), r = right.eval(env);
+        ThObject left = this.left.eval(env), right = this.right.eval(env);
+
+        if (left instanceof ThInteger && right instanceof ThInteger)
+            return ThInteger.valueOf(evalInt(((ThInteger) left).value, ((ThInteger) right).value));
+
+        // TODO use operand methods
+        return null;
+    }
+
+    public long evalInt(long l, long r)
+    {
         int cmp_ix = "== < <= > >= !=".indexOf(cmp);
 
         boolean b = false;

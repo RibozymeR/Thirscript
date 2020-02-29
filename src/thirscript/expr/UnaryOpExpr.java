@@ -3,6 +3,10 @@ package thirscript.expr;
 import java.util.List;
 import java.util.Map;
 
+import thirscript.ThInteger;
+import thirscript.ThObject;
+import thirscript.Var;
+
 public class UnaryOpExpr implements Expr
 {
     final Expr arg;
@@ -14,9 +18,18 @@ public class UnaryOpExpr implements Expr
         this.ops = ops;
     }
 
-    public long eval(Map<String, Long> env)
+    public ThObject eval(Map<String, Var> env)
     {
-        long v = arg.eval(env);
+        ThObject arg = this.arg.eval(env);
+
+        if (arg instanceof ThInteger) return ThInteger.valueOf(evalInt(((ThInteger) arg).value));
+
+        // TODO use operand methods
+        return null;
+    }
+
+    public long evalInt(long v)
+    {
         for (char op : ops)
             switch (op) {
             case '+':

@@ -2,6 +2,9 @@ package thirscript.expr;
 
 import java.util.Map;
 
+import thirscript.ThObject;
+import thirscript.Var;
+
 public class WhileExpr implements Expr
 {
     final Expr test, body;
@@ -12,10 +15,10 @@ public class WhileExpr implements Expr
         this.body = body;
     }
 
-    public long eval(Map<String, Long> env)
+    public ThObject eval(Map<String, Var> env)
     {
-        long v = 0L;
-        while (test.eval(env) != 0)
+        ThObject v = null, t;
+        while ((t = test.eval(env)) != null && t.istrue() != 0)
             v = body.eval(env);
         return v;
     }

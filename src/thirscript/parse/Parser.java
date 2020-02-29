@@ -8,10 +8,14 @@ import java.util.List;
 import thirscript.expr.AssignExpr;
 import thirscript.expr.BlockExpr;
 import thirscript.expr.CmpExpr;
+import thirscript.expr.EvalExpr;
 import thirscript.expr.Expr;
+import thirscript.expr.FuncExpr;
 import thirscript.expr.IfExpr;
 import thirscript.expr.IntLiteral;
+import thirscript.expr.NewExpr;
 import thirscript.expr.OpExpr;
+import thirscript.expr.StringLiteral;
 import thirscript.expr.UnaryOpExpr;
 import thirscript.expr.VarExpr;
 import thirscript.expr.WhileExpr;
@@ -47,6 +51,8 @@ public class Parser
 
         Expr n;
 
+        boolean can_eval = false;
+
         t = get();
         TokenType type = t.type;
         if (t.type == TokenType.LPAREN)
@@ -54,6 +60,7 @@ public class Parser
             next();
             n = parseCmp();
             assertType(next(), TokenType.RPAREN);
+            can_eval = true;
         } else if (type == TokenType.LBRACE)
         {
             next();
@@ -63,15 +70,40 @@ public class Parser
         {
             next();
             n = new IntLiteral(Long.parseLong(t.value));
+        } else if (t.type == TokenType.STRING)
+        {
+            next();
+            n = new StringLiteral(t.value);
         } else if (type == TokenType.IDENTIFIER)
         {
             VarExpr v = parseVar();
-            if (get().type == TokenType.ASSIGN)
+            TokenType asstype = get().type;
+            if (asstype == TokenType.ASSIGN || asstype == TokenType.ASSIGNC)
             {
                 next();
-                n = new AssignExpr(v, parseCmp());
+                n = new AssignExpr(v, parseCmp(), asstype == TokenType.ASSIGNC);
             } else
+            {
                 n = v;
+                can_eval = true;
+            }
+        } else if (type == TokenType.FUNC)
+        {
+            next();
+            assertType(next(), TokenType.LPAREN);
+            List<String> arg_names = new ArrayList<>();
+            if (get().type == TokenType.IDENTIFIER)
+            {
+                arg_names.add(next().value);
+                while (get().type == TokenType.COMMA)
+                {
+                    next();
+                    assertType(get(), TokenType.IDENTIFIER);
+                    arg_names.add(next().value);
+                }
+            }
+            assertType(next(), TokenType.RPAREN);
+            n = new FuncExpr(arg_names, parseCmp());
         } else if (type == TokenType.IF)
         {
             next();
@@ -95,8 +127,65 @@ public class Parser
             assertType(next(), TokenType.RPAREN);
 
             n = new WhileExpr(test, parseCmp());
+        } else if (type == TokenType.NEW)
+        {
+            // "new" , "(" , [ expr , { "," , expr } ] , ")" , "{" , { var , ( "=" | ":=" ) , cmp } , "}" ;
+            next();
+            assertType(next(), TokenType.LPAREN);
+            List<Expr> protos = new ArrayList<>();
+            if (get().type != TokenType.RPAREN)
+            {
+                protos.add(parseExpr());
+                while (get().type == TokenType.COMMA)
+                {
+                    next();
+                    protos.add(parseCmp());
+                }
+                assertType(next(), TokenType.RPAREN);
+            } else
+            {
+                protos.add(new VarExpr("Object", null));
+                next();
+            }
+
+            assertType(next(), TokenType.LBRACE);
+            List<AssignExpr> assigns = new ArrayList<>();
+            while (get().type != TokenType.RBRACE)
+            {
+                VarExpr v = parseVar();
+                TokenType asstype = get().type;
+                if (asstype == TokenType.ASSIGN || asstype == TokenType.ASSIGNC)
+                {
+                    next();
+                    assigns.add(new AssignExpr(v, parseCmp(), asstype == TokenType.ASSIGNC));
+                } else
+                    throw new ParseException("Token at " + get().getPos() + " (" + asstype + ") should be "
+                            + TokenType.ASSIGN + " or " + TokenType.ASSIGNC);
+            }
+            next();
+
+            n = new NewExpr(protos, assigns);
+
         } else
             throw new ParseException("Not a valid statement at " + t.getPos());
+
+        if (can_eval && get().type == TokenType.LPAREN)
+        {
+            next();
+            List<Expr> args = new ArrayList<>();
+            if (get().type != TokenType.RPAREN)
+            {
+                args.add(parseCmp());
+                while (get().type == TokenType.COMMA)
+                {
+                    next();
+                    args.add(parseCmp());
+                }
+                assertType(next(), TokenType.RPAREN);
+            } else
+                next();
+            n = new EvalExpr(n, args);
+        }
 
         if (pre_op.size() > 0)
         {
@@ -150,7 +239,15 @@ public class Parser
     {
         Token t = next();
         assertType(t, TokenType.IDENTIFIER);
-        return new VarExpr(t.value);
+        String var = t.value;
+        List<String> path = new ArrayList<>();
+        while(get().type == TokenType.PERIOD) {
+            next();
+            t = next();
+            assertType(t, TokenType.IDENTIFIER);
+            path.add(t.value);
+        }
+        return new VarExpr(var, path);
     }
 
     // MISC

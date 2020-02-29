@@ -3,6 +3,12 @@ package thirscript.expr;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.PrimitiveIterator.OfLong;
+import java.util.stream.Collectors;
+
+import thirscript.ThInteger;
+import thirscript.ThObject;
+import thirscript.Var;
 
 public class OpExpr implements Expr
 {
@@ -15,13 +21,25 @@ public class OpExpr implements Expr
         ops = new ArrayList<>();
     }
 
-    public long eval(Map<String, Long> env)
+    public ThObject eval(Map<String, Var> env)
     {
-        long v = args.get(0).eval(env);
+        List<ThObject> arg_objs = args.stream().map(e -> e.eval(env)).collect(Collectors.toList());
+
+        if (arg_objs.stream().allMatch(obj -> obj instanceof ThInteger)) return evalInts(arg_objs);
+
+        // TODO use operand methods
+        return null;
+    }
+
+    public ThObject evalInts(List<ThObject> int_objs)
+    {
+        OfLong ints = int_objs.stream().mapToLong(o -> ((ThInteger) o).value).iterator();
+
+        long v = ints.nextLong();
         for (int i = 0; i < ops.size(); ++i)
         {
             char op = ops.get(i);
-            long b = args.get(i + 1).eval(env);
+            long b = ints.nextLong();
             switch (op) {
             case '+':
                 v += b;
@@ -48,7 +66,7 @@ public class OpExpr implements Expr
                 v %= b;
             }
         }
-        return v;
+        return ThInteger.valueOf(v);
     }
 
     public Expr compress()

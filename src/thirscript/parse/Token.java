@@ -21,8 +21,8 @@ public class Token
             throw new IllegalArgumentException("Identifier token at " + line + ":" + column + " cannot be keyword");
 
         this.type = type;
-        this.line = line;
-        this.column = column;
+        this.line = line + 1;
+        this.column = column + 1;
         this.value = value;
     }
 
@@ -54,12 +54,13 @@ public class Token
         PERIOD, /* '.' */
         COMMA, /* ',' */
         INT, /* int literal */
+        STRING, /* string literal */
         FUNC, /* '#' */
-        ASSIGN, /* '=' */
-        IF, ELSE, WHILE, /* keywords */
+        ASSIGN, ASSIGNC, /* '=', ':=' */
+        IF, ELSE, WHILE, NEW, /* keywords */
         OP, /* + - * / % & | ^ ~ == < <= > >= != */
-        LPAREN, RPAREN, LBRACE, RBRACE, EOF;
+        LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, EOF;
 
-        public static String[] reserved = { "else", "if", "print", "while" };
+        public static String[] reserved = { "else", "if", "new", "while" };
     }
 }

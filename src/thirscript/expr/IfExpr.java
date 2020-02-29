@@ -2,6 +2,9 @@ package thirscript.expr;
 
 import java.util.Map;
 
+import thirscript.ThObject;
+import thirscript.Var;
+
 public class IfExpr implements Expr
 {
     final Expr test, if_node, else_node;
@@ -18,10 +21,12 @@ public class IfExpr implements Expr
         this.else_node = else_node;
     }
 
-    public long eval(Map<String, Long> env)
+    public ThObject eval(Map<String, Var> env)
     {
-        long t = test.eval(env);
-        return t != 0 ? if_node.eval(env) : else_node != null ? else_node.eval(env) : 0L;
+        ThObject t = test.eval(env);
+
+        // TODO replace null
+        return (t != null && t.istrue() != 0) ? if_node.eval(env) : else_node != null ? else_node.eval(env) : null;
     }
 
     public String toString()

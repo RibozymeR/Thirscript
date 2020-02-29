@@ -2,9 +2,12 @@ package thirscript.expr;
 
 import java.util.Map;
 
+import thirscript.ThObject;
+import thirscript.Var;
+
 public interface Expr
 {
-    long eval(Map<String, Long> env);
+    ThObject eval(Map<String, Var> env);
 
     String toString();
 }

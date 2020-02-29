@@ -1,0 +1,23 @@
+n = 2
+while(n < 100) {
+    prime = 1
+    d = 1
+    while((d = d + 1) * d <= n)
+        if(n % d == 0) prime = 0
+    if(prime) print(n)
+    n = n + 1
+}
+
+Stack = new(Object)
+{
+    value = null
+    next = null
+    
+    init = #(v) new(Stack){ value = v }
+    push = #(v) new(Stack){ value = v next = _ }
+    
+    print = #() {
+        if(next != null) next.print()
+        print(value)
+    }
+}
