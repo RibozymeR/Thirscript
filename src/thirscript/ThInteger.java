@@ -7,45 +7,45 @@ import java.util.TreeMap;
 
 public class ThInteger extends ThObject
 {
-    /**
-     *  Int = new(Object){
-     *      _native := true
-     *  }
-     */
+	/**
+	 * Int = new(Object){ _native := true }
+	 */
 
-    private static Map<Long, ThInteger> cache = new TreeMap<>();
+	private static Map<Long, ThInteger> cache = new TreeMap<>();
 
-    public static final ThInteger TRUE = valueOf(-1);
-    public static final ThInteger FALSE = valueOf(0);
+	public static final ThInteger TRUE = valueOf(-1);
+	public static final ThInteger FALSE = valueOf(0);
 
-    public final long value;
+	public final long value;
 
-    private ThInteger(long value)
-    {
-        super(Set.of(OBJECT), Collections.emptyMap());
+	private ThInteger(long value)
+	{
+		super(Set.of(OBJECT), Collections.emptyMap());
 
-        this.value = value;
-        vars.put("_native", Var.constant(ThInteger.TRUE));
-        // vars.put("_value", Var.constant(this));
-        // vars.put("true", Var.constant(value == 0 ? ThInteger.FALSE : ThInteger.TRUE)); <- function, not value
-    }
+		this.value = value;
+		vars.put("_native", Var.constant(ThInteger.TRUE));
+		// vars.put("_value", Var.constant(this));
+		// vars.put("true", Var.constant(value == 0 ? ThInteger.FALSE :
+		// ThInteger.TRUE)); <- function, not value
+	}
 
-    public long istrue()
-    {
-        return value;
-    }
+	public long istrue()
+	{
+		return value;
+	}
 
-    public String toString()
-    {
-        return Long.toString(value);
-    }
+	public String toString()
+	{
+		return Long.toString(value);
+	}
 
-    public static ThInteger valueOf(long v)
-    {
-        if (cache.containsKey(v)) return cache.get(v);
+	public static ThInteger valueOf(long v)
+	{
+		if(cache.containsKey(v))
+			return cache.get(v);
 
-        ThInteger i = new ThInteger(v);
-        cache.put(v, i);
-        return i;
-    }
+		ThInteger i = new ThInteger(v);
+		cache.put(v, i);
+		return i;
+	}
 }

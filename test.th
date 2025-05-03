@@ -8,16 +8,16 @@ while(n < 100) {
     n = n + 1
 }
 
-Stack = new(Object)
+Stack = new Object
 {
-    value = null
-    next = null
+    value = nil
+    next = nil
     
-    init = #(v) new(Stack){ value = v }
-    push = #(v) new(Stack){ value = v next = _ }
+    init = #(v) new Stack { value = v }
+    push = #(v) new Stack { value = v next = _ }
     
     printl = #() {
-        if(next != null) next.printl()
+        if(next != nil) next.printl()
         print(value)
     }
 }

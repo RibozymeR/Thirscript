@@ -2,5 +2,6 @@
  * @author RibozymeR
  *
  */
-module thirscript {
+module thirscript
+{
 }

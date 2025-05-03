@@ -8,20 +8,20 @@ import thirscript.Var;
 
 public class StringLiteral implements Expr
 {
-    final String value;
+	final String value;
 
-    public StringLiteral(String value)
-    {
-        this.value = value;
-    }
+	public StringLiteral(String value)
+	{
+		this.value = value;
+	}
 
-    public ThObject eval(Map<String, Var> env)
-    {
-        return ThString.valueOf(value);
-    }
+	public ThObject eval(Map<String, Var> env)
+	{
+		return ThString.valueOf(value);
+	}
 
-    public String toString()
-    {
-        return String.format("'%s'", value);
-    }
+	public String toString()
+	{
+		return String.format("'%s'", value);
+	}
 }

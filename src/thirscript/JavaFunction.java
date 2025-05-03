@@ -12,86 +12,89 @@ import java.util.function.LongFunction;
 
 public class JavaFunction extends ThObject implements IFunction
 {
-    private static final Map<Class<?>, LongFunction<?>> numbers;
-    static
-    {
-        numbers = new HashMap<>();
-        numbers.put(boolean.class, l -> Boolean.valueOf(l != 0));
-        numbers.put(Boolean.class, l -> Boolean.valueOf(l != 0));
+	private static final Map<Class<?>, LongFunction<?>> numbers;
+	static {
+		numbers = new HashMap<>();
+		numbers.put(boolean.class, l -> Boolean.valueOf(l != 0));
+		numbers.put(Boolean.class, l -> Boolean.valueOf(l != 0));
 
-        numbers.put(byte.class, l -> Byte.valueOf((byte) l));
-        numbers.put(Byte.class, l -> Byte.valueOf((byte) l));
-        numbers.put(char.class, l -> Character.valueOf((char) l));
-        numbers.put(Character.class, l -> Character.valueOf((char) l));
-        numbers.put(short.class, l -> Short.valueOf((short) l));
-        numbers.put(Short.class, l -> Short.valueOf((short) l));
+		numbers.put(byte.class, l -> Byte.valueOf((byte) l));
+		numbers.put(Byte.class, l -> Byte.valueOf((byte) l));
+		numbers.put(char.class, l -> Character.valueOf((char) l));
+		numbers.put(Character.class, l -> Character.valueOf((char) l));
+		numbers.put(short.class, l -> Short.valueOf((short) l));
+		numbers.put(Short.class, l -> Short.valueOf((short) l));
 
-        numbers.put(int.class, l -> Integer.valueOf((int) l));
-        numbers.put(Integer.class, l -> Integer.valueOf((int) l));
-        numbers.put(long.class, Long::valueOf);
-        numbers.put(Long.class, Long::valueOf);
+		numbers.put(int.class, l -> Integer.valueOf((int) l));
+		numbers.put(Integer.class, l -> Integer.valueOf((int) l));
+		numbers.put(long.class, Long::valueOf);
+		numbers.put(Long.class, Long::valueOf);
 
-        numbers.put(float.class, Float::valueOf);
-        numbers.put(Float.class, Float::valueOf);
-        numbers.put(double.class, Double::valueOf);
-        numbers.put(Double.class, Double::valueOf);
+		numbers.put(float.class, Float::valueOf);
+		numbers.put(Float.class, Float::valueOf);
+		numbers.put(double.class, Double::valueOf);
+		numbers.put(Double.class, Double::valueOf);
 
-        numbers.put(BigInteger.class, BigInteger::valueOf);
-    }
+		numbers.put(BigInteger.class, BigInteger::valueOf);
+	}
 
-    final MethodHandle func;
+	final MethodHandle func;
 
-    public JavaFunction(MethodHandle func)
-    {
-        super(Set.of(OBJECT), Collections.emptyMap());
-        this.func = func;
-    }
+	public JavaFunction(MethodHandle func)
+	{
+		super(Set.of(OBJECT), Collections.emptyMap());
+		this.func = func;
+	}
 
-    public boolean can_eval(List<ThObject> arg_types)
-    {
-        if (arg_types.size() != func.type().parameterCount()) return false;
+	public boolean can_eval(List<ThObject> arg_types)
+	{
+		if(arg_types.size() != func.type().parameterCount())
+			return false;
 
-        // TODO should not always be true
-        return true;
-    }
+		// TODO should not always be true
+		return true;
+	}
 
-    public ThObject eval(List<ThObject> th_args)
-    {
-        Object[] args = new Object[th_args.size()];
+	public ThObject eval(List<ThObject> th_args)
+	{
+		Object[] args = new Object[th_args.size()];
 
-        List<Class<?>> arg_types = func.type().parameterList();
+		List<Class<?>> arg_types = func.type().parameterList();
 
-        Arrays.setAll(args, i -> convert(th_args.get(i), arg_types.get(i)));
+		Arrays.setAll(args, i -> convert(th_args.get(i), arg_types.get(i)));
 
-        try
-        {
-            // TODO arg, not arg[0]
-            func.invoke(args[0]);
-            return ThInteger.TRUE;
-        } catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-        return ThInteger.FALSE;
-    }
+		try {
+			// TODO arg, not arg[0]
+			func.invoke(args[0]);
+			return ThInteger.TRUE;
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
+		return ThInteger.FALSE;
+	}
 
-    public String toString()
-    {
-        return "J:" + func;
-    }
+	public String toString()
+	{
+		return "J:" + func;
+	}
 
-    public static Object convert(ThObject thobj, Class<?> clazz)
-    {
-        // TODO replace null
-        if (thobj == null) return null;
+	public static Object convert(ThObject thobj, Class<?> clazz)
+	{
+		// TODO replace null
+		if(thobj == null)
+			return null;
 
-        LongFunction<?> f = numbers.get(clazz);
-        if (f != null) return f.apply(((ThInteger) thobj).value);
+		LongFunction<?> f = numbers.get(clazz);
+		if(f != null)
+			return f.apply(((ThInteger) thobj).value);
 
-        if (String.class.isAssignableFrom(clazz)) return ((ThString) thobj).value;
+		if(String.class.isAssignableFrom(clazz))
+			return ((ThString) thobj).value;
 
-        if (ThObject.class.isAssignableFrom(clazz)) return thobj;
+		if(ThObject.class.isAssignableFrom(clazz))
+			return thobj;
 
-        throw new IllegalArgumentException("Object " + thobj + " not convertible to " + clazz);
-    }
+		throw new IllegalArgumentException("Object " + thobj + " not convertible to " + clazz);
+	}
 }

@@ -7,7 +7,7 @@ import thirscript.Var;
 
 public interface Expr
 {
-    ThObject eval(Map<String, Var> env);
+	ThObject eval(Map<String, Var> env);
 
-    String toString();
+	String toString();
 }

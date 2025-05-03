@@ -8,25 +8,25 @@ import thirscript.Var;
 
 public class IntLiteral implements Expr
 {
-    final long value;
+	final long value;
 
-    public IntLiteral(long value)
-    {
-        this.value = value;
-    }
+	public IntLiteral(long value)
+	{
+		this.value = value;
+	}
 
-    public IntLiteral(ThInteger value)
-    {
-        this.value = value.value;
-    }
+	public IntLiteral(ThInteger value)
+	{
+		this.value = value.value;
+	}
 
-    public ThObject eval(Map<String, Var> env)
-    {
-        return ThInteger.valueOf(value);
-    }
+	public ThObject eval(Map<String, Var> env)
+	{
+		return ThInteger.valueOf(value);
+	}
 
-    public String toString()
-    {
-        return Long.toString(value);
-    }
+	public String toString()
+	{
+		return Long.toString(value);
+	}
 }

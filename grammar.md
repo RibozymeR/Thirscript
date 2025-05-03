@@ -1,8 +1,8 @@
-    program = { cmp } ;
+    block = { cmp } ;
 
     expr = { "+" | "-" | "~" | "!" } , (
         "(" , cmp , ")" , [ eval ]
-        | "{" , { cmp } , "}"
+        | "{" , block , "}"
         | INT
         | STRING
         | lambda
@@ -13,8 +13,8 @@
     ) ;
     eval = "(" , [ cmp , { "," , cmp } ] , ")" ;
     
-    lambda = "#" , "(" , [ IDENTIFIER , { "," , IDENTIFIER } ] , ")" , cmp ;         # function arguments cannot be called "_"
-    new_obj = "new" , "(" , [ expr , { "," , expr } ] , ")" , "{" , { var , ( "=" | ":=" ) , cmp } , "}" ;
+    lambda = "#" , "(" , [ IDENTIFIER , { "," , IDENTIFIER } ] , ")" , expr ;         # function arguments cannot be called "_"
+    new_obj = "new" , expr , "{" , { var , ( "=" | ":=" ) , cmp } , "}" ;
 
     var = IDENTIFIER , { '.' , IDENTIFIER } ;
 
@@ -28,7 +28,7 @@
     IDENTIFIER = [_a-zA-Z][_0-9a-zA-Z]*
     
     INT = 0 | [1-9][0-9]*
-    STRING = '[^\r\n]*'
+    STRING = '[^']*'
     
     CMP_OP = [<>] | [=!<>]=
     SUM_OP = [+-&|^]
