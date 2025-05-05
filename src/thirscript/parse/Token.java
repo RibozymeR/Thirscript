@@ -1,39 +1,20 @@
 package thirscript.parse;
 
-import java.util.Arrays;
+import java.util.Set;
 
-public class Token
+public record Token(TokenType type, String value, int line, int column)
 {
 	public static final Token EOF = new Token(TokenType.EOF, -1, -1);
 
-	final TokenType type;
-	final int line, column;
-	final String value;
-
-	protected Token(TokenType type, int line, int column)
+	public Token
 	{
-		this(type, line, column, null);
+		if(type == TokenType.IDENTIFIER && TokenType.reserved.contains(value))
+			throw new IllegalArgumentException("Identifier token at " + line + ":" + column + " should be keyword");
 	}
 
-	protected Token(TokenType type, int line, int column, String value)
+	public Token(TokenType type, int line, int column)
 	{
-		if(type == TokenType.IDENTIFIER && Arrays.binarySearch(TokenType.reserved, value) >= 0)
-			throw new IllegalArgumentException("Identifier token at " + line + ":" + column + " cannot be keyword");
-
-		this.type = type;
-		this.line = line + 1;
-		this.column = column + 1;
-		this.value = value;
-	}
-
-	public TokenType getType()
-	{
-		return type;
-	}
-
-	public Object getValue()
-	{
-		return value;
+		this(type, null, line, column);
 	}
 
 	public String toString()
@@ -52,16 +33,16 @@ public class Token
 	public static enum TokenType
 	{
 		IDENTIFIER, /* identifier */
-		PERIOD, /* '.' */
-		COMMA, /* ',' */
+		PERIOD, /* . */
+		COMMA, /* , */
 		INT, /* int literal */
 		STRING, /* string literal */
-		FUNC, /* '#' */
-		ASSIGN, ASSIGNC, /* '=', ':=' */
+		FUNC, /* # */
+		ASSIGN, ASSIGNC, /* = := */
 		IF, ELSE, WHILE, NEW, /* keywords */
 		OP, /* + - * / % & | ^ ~ == < <= > >= != */
-		LPAREN, RPAREN, LBRACE, RBRACE, EOF;
+		LPAREN, RPAREN, LBRACE, RBRACE, EOF; /* ( ) { } */
 
-		public static String[] reserved = {"else", "if", "new", "while"};
+		public static final Set<String> reserved = Set.of("if", "else", "while", "new");
 	}
 }

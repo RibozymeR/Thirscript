@@ -16,17 +16,28 @@ import thirscript.ThObject;
 import thirscript.Var;
 import thirscript.expr.Expr;
 import thirscript.parse.Lexer;
+import thirscript.parse.ParseException;
 import thirscript.parse.Parser;
+import thirscript.parse.Token;
+import thirscript.parse.Token.TokenType;
 
 public class Test
 {
-	public static void main(String[] args) throws NoSuchMethodException, IllegalAccessException, IOException
+	public static void main(String[] args) throws NoSuchMethodException, IllegalAccessException, IOException, ParseException
 	{
-		// Lexer lexer = new Lexer(new InputStreamReader(System.in));
 		Lexer lexer = new Lexer(Files.newBufferedReader(Paths.get("test.th")));
+		while(true) {
+			Token token = lexer.next();
+			System.out.println(token);
+			
+			if(token.type() == TokenType.EOF)
+				break;
+		}
+		
+		lexer = new Lexer(Files.newBufferedReader(Paths.get("test.th")));
 		Parser parser = new Parser();
 
-		Expr n = parser.parse(lexer.iterator());
+		Expr n = parser.parse(lexer);
 		System.out.println(n);
 
 		Map<String, Var> start = new HashMap<>();
@@ -35,7 +46,7 @@ public class Test
 		start.put("Object", Var.constant(ThObject.OBJECT));
 
 		// put builtin values
-		start.put("null", ThObject.NULL);
+		start.put("nil", ThObject.NULL);
 		start.put("false", Var.constant(ThInteger.FALSE));
 		start.put("true", Var.constant(ThInteger.TRUE));
 
