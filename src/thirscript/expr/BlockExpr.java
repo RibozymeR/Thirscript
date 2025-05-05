@@ -37,7 +37,7 @@ public class BlockExpr implements Expr
 
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder("(body");
+		StringBuilder sb = new StringBuilder("(block");
 		for(Expr n: children) {
 			sb.append(' ');
 			sb.append(n);
