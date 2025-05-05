@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import thirscript.expr.Expr;
 
@@ -19,7 +18,7 @@ public class ThFunction extends ThObject implements IFunction
 
 	public ThFunction(Expr func, List<String> arg_names)
 	{
-		super(Set.of(OBJECT), Collections.emptyMap());
+		super(OBJECT, Collections.emptyMap());
 		this.func = func;
 		this.arg_names = arg_names.toArray(new String[0]);
 	}

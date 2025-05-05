@@ -8,7 +8,7 @@ while(n < 100) {
     n = n + 1
 }
 
-Stack = new Object
+Stack = new
 {
     value = nil
     next = nil

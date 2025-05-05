@@ -2,7 +2,6 @@ package thirscript;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class ThString extends ThObject
@@ -17,7 +16,7 @@ public class ThString extends ThObject
 
 	private ThString(String value)
 	{
-		super(Set.of(OBJECT), Collections.emptyMap());
+		super(OBJECT, Collections.emptyMap());
 
 		this.value = value;
 		vars.put("_native", Var.constant(ThInteger.TRUE));

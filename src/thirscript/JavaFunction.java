@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.LongFunction;
 
 public class JavaFunction extends ThObject implements IFunction
@@ -42,7 +41,7 @@ public class JavaFunction extends ThObject implements IFunction
 
 	public JavaFunction(MethodHandle func)
 	{
-		super(Set.of(OBJECT), Collections.emptyMap());
+		super(OBJECT, Collections.emptyMap());
 		this.func = func;
 	}
 

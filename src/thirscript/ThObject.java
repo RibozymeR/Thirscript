@@ -1,11 +1,9 @@
 package thirscript;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import thirscript.expr.IntLiteral;
 
@@ -25,20 +23,20 @@ public class ThObject
 		OBJECT.vars.put("true", new Var(new ThFunction(new IntLiteral(ThInteger.TRUE), List.of())));
 	}
 
-	public final Set<ThObject> protos;
+	public final ThObject proto;
 	public final Map<String, Var> vars;
 
 	// bootstrapping compiler
 	private ThObject()
 	{
-		protos = Collections.emptySet();
+		proto = null;
 		vars = new HashMap<>();
 		vars.put("_", Var.constant(this));
 	}
 
-	public ThObject(Collection<ThObject> protos, Map<String, Var> new_vars)
+	public ThObject(ThObject proto, Map<String, Var> new_vars)
 	{
-		this.protos = protos == null || protos.isEmpty() ? Set.of(OBJECT) : Set.copyOf(protos);
+		this.proto = proto;
 
 		vars = new HashMap<>(new_vars);
 		vars.put("_native", Var.constant(ThInteger.FALSE));
@@ -63,11 +61,10 @@ public class ThObject
 		if(vars.containsKey(name))
 			return vars.get(name);
 
-		for(ThObject proto: protos) {
-			Var v = proto.getVar(name);
-			if(v != null)
-				return v;
-		}
+		Var v = proto.getVar(name);
+		if(v != null)
+			return v;
+		
 		return null;
 	}
 }

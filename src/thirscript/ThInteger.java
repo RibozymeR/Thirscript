@@ -2,7 +2,6 @@ package thirscript;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class ThInteger extends ThObject
@@ -20,7 +19,7 @@ public class ThInteger extends ThObject
 
 	private ThInteger(long value)
 	{
-		super(Set.of(OBJECT), Collections.emptyMap());
+		super(OBJECT, Collections.emptyMap());
 
 		this.value = value;
 		vars.put("_native", Var.constant(ThInteger.TRUE));

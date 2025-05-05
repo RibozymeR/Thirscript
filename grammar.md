@@ -14,7 +14,7 @@
     eval = "(" , [ cmp , { "," , cmp } ] , ")" ;
     
     lambda = "#" , "(" , [ IDENTIFIER , { "," , IDENTIFIER } ] , ")" , expr ;         # function arguments cannot be called "_"
-    new_obj = "new" , expr , "{" , { var , ( "=" | ":=" ) , cmp } , "}" ;
+    new_obj = "new" , [ expr ] , "{" , { var , ( "=" | ":=" ) , cmp } , "}" ;
 
     var = IDENTIFIER , { '.' , IDENTIFIER } ;
 
