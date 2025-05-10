@@ -132,7 +132,7 @@ public class Parser
 				proto = parseExpr();
 			else
 				proto = new VarExpr("Object", null);
-			
+
 			assertType(next(), TokenType.LBRACE);
 			List<AssignExpr> assigns = new ArrayList<>();
 			while(get().type() != TokenType.RBRACE) {

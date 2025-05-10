@@ -41,8 +41,7 @@ public class Lexer implements TokenIterator
 	{
 		this.source = source;
 		this.line = 1;
-		this.column = 0; // little hack: start this at 0 and cur as ' ' so that the first actual
-							// character of the source code is 1:1
+		this.column = 0; // little hack: start this at 0 and cur as ' ' so that the first actual character of the source code is 1:1
 
 		cur = ' ';
 	}
@@ -82,18 +81,23 @@ public class Lexer implements TokenIterator
 
 	private static final Map<String, TokenType> keyword_types = Map.of("if", IF, "else", ELSE, "while", WHILE, "new", NEW);
 
+	private void read() throws IOException
+	{
+		if(cur == '\n') {
+			line++;
+			column = 1;
+		}
+		else
+			column++;
+
+		cur = source.read();
+	}
+
 	public Token next() throws IOException, ParseException
 	{
 		// skip whitespace
 		while(cur != -1 && Character.isWhitespace(cur)) {
-			if(cur == '\n') {
-				line++;
-				column = 1;
-			}
-			else
-				column++;
-
-			cur = source.read();
+			read();
 		}
 
 		// at the end, just return EOF
@@ -104,27 +108,17 @@ public class Lexer implements TokenIterator
 		if(cur == '\'') {
 			StringBuilder string = new StringBuilder();
 
-			column++;
-			cur = source.read();
+			read();
 
 			while(cur != -1 && cur != '\'') {
 				string.append((char) cur);
-
-				if(cur == '\n') {
-					line++;
-					column = 1;
-				}
-				else
-					column++;
-
-				cur = source.read();
+				read();
 			}
 
 			if(cur == -1)
 				throw new IOException("Unexpected end of file!");
 
-			column++;
-			cur = source.read();
+			read();
 
 			return token(TokenType.STRING, string.toString());
 		}
@@ -135,9 +129,7 @@ public class Lexer implements TokenIterator
 
 			while(Character.isDigit(cur)) {
 				token.append((char) cur);
-
-				column++;
-				cur = source.read();
+				read();
 			}
 
 			if(Character.isAlphabetic(cur))
@@ -152,8 +144,7 @@ public class Lexer implements TokenIterator
 
 			while(Character.isLetterOrDigit(cur) || cur == '_') {
 				token_builder.append((char) cur);
-				column++;
-				cur = source.read();
+				read();
 			}
 
 			String token = token_builder.toString();
@@ -164,8 +155,7 @@ public class Lexer implements TokenIterator
 		if(single_char_types.containsKey((char) cur)) {
 			int c = cur;
 
-			column++;
-			cur = source.read();
+			read();
 
 			return token(single_char_types.get((char) c));
 		}
@@ -174,13 +164,10 @@ public class Lexer implements TokenIterator
 		if(cur == ':' || cur == '<' || cur == '>' || cur == '!' || cur == '=') {
 			int first = cur;
 
-			column++;
-			cur = source.read();
+			read();
 
 			if(cur == '=') {
-				column++;
-				cur = source.read();
-
+				read();
 				return first == ':' ? token(TokenType.ASSIGNC) : token(TokenType.OP, String.format("%c=", (char) first));
 			}
 			else
@@ -190,8 +177,7 @@ public class Lexer implements TokenIterator
 		// if nothing above applies, we return a one-character operator
 		int op = cur;
 
-		column++;
-		cur = source.read();
+		read();
 
 		return token(TokenType.OP, Character.toString(op));
 	}

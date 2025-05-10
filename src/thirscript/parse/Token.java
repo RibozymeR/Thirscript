@@ -4,6 +4,7 @@ import java.util.Set;
 
 public record Token(TokenType type, String value, int line, int column)
 {
+
 	public static final Token EOF = new Token(TokenType.EOF, -1, -1);
 
 	public Token
