@@ -42,7 +42,8 @@ public class Var
 	{
 		if(constant)
 			return constant(value);
-		return new Var(value, constant);
+
+		return new Var(value, false);
 	}
 
 	public static Var constant(ThObject value)
