@@ -1,6 +1,5 @@
 package thirscript;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,12 +15,17 @@ public class ThString extends ThObject
 
 	private ThString(String value)
 	{
-		super(OBJECT, Collections.emptyMap());
+		super(OBJECT, Map.of());
 
 		this.value = value;
 		vars.put("_native", Var.constant(ThInteger.TRUE));
 		// vars.put("_value", Var.constant(this));
 		vars.put("length", Var.constant(ThInteger.valueOf(value.length())));
+	}
+	
+	public String toString()
+	{
+		return value;
 	}
 
 	public static ThString valueOf(String v)
