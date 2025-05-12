@@ -40,31 +40,17 @@ public class OpExpr implements Expr
 		for(int i = 0; i < ops.size(); ++i) {
 			char op = ops.get(i);
 			long b = ints.nextLong();
-			switch(op) {
-			case '+':
-				v += b;
-				break;
-			case '-':
-				v -= b;
-				break;
-			case '&':
-				v &= b;
-				break;
-			case '|':
-				v |= b;
-				break;
-			case '^':
-				v ^= b;
-				break;
-			case '*':
-				v *= b;
-				break;
-			case '/':
-				v /= b;
-				break;
-			case '%':
-				v %= b;
-			}
+			v = switch(op) {
+			case '+'	-> v + b;
+			case '-'	-> v - b;
+			case '&'	-> v & b;
+			case '|'	-> v | b;
+			case '^'	-> v ^ b;
+			case '*'	-> v * b;
+			case '/'	-> v / b;
+			case '%'	-> v % b;
+			default		-> v;
+			};
 		}
 		return ThInteger.valueOf(v);
 	}

@@ -9,8 +9,8 @@ import thirscript.Var;
 
 public class UnaryOpExpr implements Expr
 {
-	final Expr arg;
-	final List<Character> ops;
+	public final Expr arg;
+	public final List<Character> ops;
 
 	public UnaryOpExpr(Expr arg, List<Character> ops)
 	{
@@ -22,8 +22,8 @@ public class UnaryOpExpr implements Expr
 	{
 		ThObject arg = this.arg.eval(env);
 
-		if(arg instanceof ThInteger)
-			return ThInteger.valueOf(evalInt(((ThInteger) arg).value));
+		if(arg instanceof ThInteger integer)
+			return ThInteger.valueOf(evalInt(integer.value));
 
 		// TODO use operand methods
 		return null;
@@ -31,19 +31,14 @@ public class UnaryOpExpr implements Expr
 
 	public long evalInt(long v)
 	{
-		for(char op: ops)
-			switch(op) {
-			case '+':
-				break;
-			case '-':
-				v = -v;
-				break;
-			case '~':
-				v = ~v;
-				break;
-			case '!':
-				v = v == 0 ? -1 : 0;
-			}
+		for(char op: ops) {
+			v = switch(op) {
+			case '-'	-> v;
+			case '~'	-> ~v;
+			case '!'	-> v == 0 ? -1 : 0;
+			default		-> v;
+			};
+		}
 		return v;
 	}
 
