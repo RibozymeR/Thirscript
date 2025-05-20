@@ -24,7 +24,7 @@ public class FuncExpr implements Expr
 	// TODO: closure
 	public ThObject eval(Map<String, Var> env)
 	{
-		return new ThFunction(body, arg_names);
+		return new ThFunction(body, arg_names, env);
 	}
 
 	public String toString()
