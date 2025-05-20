@@ -27,7 +27,7 @@ public class NewExpr implements Expr
 	public ThObject eval(Map<String, Var> env)
 	{
 		ThObject proto = this.proto.eval(env);
-		
+
 		Map<String, Var> new_env = new HashMap<>(env);
 		for(AssignExpr assexpr: new_vars)
 			assexpr.eval(new_env);

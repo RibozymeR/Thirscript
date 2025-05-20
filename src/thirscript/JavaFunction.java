@@ -3,7 +3,6 @@ package thirscript;
 import java.lang.invoke.MethodHandle;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class JavaFunction extends ThObject implements IFunction
 
 	public JavaFunction(MethodHandle func)
 	{
-		super(OBJECT, Collections.emptyMap());
+		super(OBJECT, Map.of());
 		this.func = func;
 	}
 

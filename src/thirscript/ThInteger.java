@@ -1,13 +1,12 @@
 package thirscript;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class ThInteger extends ThObject
 {
 	/**
-	 * Int = new(Object){ _native := true }
+	 * integer = new(Object){ _native := true _value := ... }
 	 */
 
 	private static Map<Long, ThInteger> cache = new TreeMap<>();
@@ -19,13 +18,11 @@ public class ThInteger extends ThObject
 
 	private ThInteger(long value)
 	{
-		super(OBJECT, Collections.emptyMap());
+		super(OBJECT, Map.of());
 
 		this.value = value;
 		vars.put("_native", Var.constant(ThInteger.TRUE));
 		// vars.put("_value", Var.constant(this));
-		// vars.put("true", Var.constant(value == 0 ? ThInteger.FALSE :
-		// ThInteger.TRUE)); <- function, not value
 	}
 
 	public long istrue()
