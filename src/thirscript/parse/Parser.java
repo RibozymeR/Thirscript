@@ -43,9 +43,9 @@ public class Parser
 	{
 		List<Character> pre_op = new ArrayList<>();
 		Token t;
-		while((t = get()).type() == TokenType.OP && "+ - ~ !".indexOf((String) t.value()) >= 0) {
+		while((t = get()).type() == TokenType.OP && "+ - ~ !".indexOf((String) t.content()) >= 0) {
 			next();
-			pre_op.add(t.value().charAt(0));
+			pre_op.add(t.content().charAt(0));
 		}
 
 		Expr n;
@@ -54,7 +54,7 @@ public class Parser
 
 		t = get();
 		TokenType type = t.type();
-		String value = t.value();
+		String value = t.content();
 		if(type == TokenType.LPAREN) {
 			next();
 			n = parseCmp();
@@ -91,11 +91,11 @@ public class Parser
 			assertType(next(), TokenType.LPAREN);
 			List<String> arg_names = new ArrayList<>();
 			if(get().type() == TokenType.IDENTIFIER) {
-				arg_names.add(next().value());
+				arg_names.add(next().content());
 				while(get().type() == TokenType.COMMA) {
 					next();
 					assertType(get(), TokenType.IDENTIFIER);
-					arg_names.add(next().value());
+					arg_names.add(next().content());
 				}
 			}
 			assertType(next(), TokenType.RPAREN);
@@ -183,10 +183,10 @@ public class Parser
 
 		Token t = get();
 		if(t.type() == TokenType.OP) {
-			if("== < <= > >= !=".indexOf(t.value()) == -1)
+			if("== < <= > >= !=".indexOf(t.content()) == -1)
 				throw new ParseException("Not a valid operator at " + t.getPos());
 			next();
-			return new CmpExpr(n, parseSum(), t.value());
+			return new CmpExpr(n, parseSum(), t.content());
 		}
 		else
 			return n;
@@ -196,9 +196,9 @@ public class Parser
 	{
 		OpExpr n = new OpExpr(parseProd());
 		Token t;
-		while((t = get()).type() == TokenType.OP && "+-&|^".indexOf(t.value()) != -1) {
+		while((t = get()).type() == TokenType.OP && "+-&|^".indexOf(t.content()) != -1) {
 			next();
-			n.addChild(parseProd(), t.value().charAt(0));
+			n.addChild(parseProd(), t.content().charAt(0));
 		}
 		return n.compress();
 	}
@@ -207,9 +207,9 @@ public class Parser
 	{
 		OpExpr n = new OpExpr(parseExpr());
 		Token t;
-		while((t = get()).type() == TokenType.OP && "*/%".indexOf(t.value()) != -1) {
+		while((t = get()).type() == TokenType.OP && "*/%".indexOf(t.content()) != -1) {
 			next();
-			n.addChild(parseExpr(), t.value().charAt(0));
+			n.addChild(parseExpr(), t.content().charAt(0));
 		}
 		return n.compress();
 	}
@@ -218,13 +218,13 @@ public class Parser
 	{
 		Token t = next();
 		assertType(t, TokenType.IDENTIFIER);
-		String var = t.value();
+		String var = t.content();
 		List<String> path = new ArrayList<>();
 		while(get().type() == TokenType.PERIOD) {
 			next();
 			t = next();
 			assertType(t, TokenType.IDENTIFIER);
-			path.add(t.value());
+			path.add(t.content());
 		}
 		return new VarExpr(var, path);
 	}
