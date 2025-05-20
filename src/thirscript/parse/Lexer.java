@@ -33,9 +33,9 @@ public class Lexer implements TokenIterator
 	int cur;
 
 	/**
-	 * Creates a new lexer
+	 * Creates a new lexer.
 	 *
-	 * @param source Source code to be lexed
+	 * @param source Source code to be lexed.
 	 */
 	public Lexer(Reader source)
 	{
@@ -47,9 +47,9 @@ public class Lexer implements TokenIterator
 	}
 
 	/**
-	 * Creates a new lexer
+	 * Creates a new lexer.
 	 *
-	 * @param source Source code to be lexed
+	 * @param source Source code to be lexed.
 	 */
 	public Lexer(String source)
 	{
@@ -57,30 +57,47 @@ public class Lexer implements TokenIterator
 	}
 
 	/**
-	 * Creates a new lexer
+	 * Creates a new lexer.
 	 *
-	 * @param source Source code to be lexed
+	 * @param source Source code to be lexed.
 	 */
 	public Lexer(InputStream source)
 	{
 		this(new InputStreamReader(source));
 	}
 
+	/**
+	 * Create a token with the given type, at the current position.
+	 */
 	private Token token(TokenType type)
 	{
 		return new Token(type, line, column);
 	}
 
-	private Token token(TokenType type, String value)
+	/**
+	 * Create a token with the given type and content, at the current position.
+	 */
+	private Token token(TokenType type, String content)
 	{
-		return new Token(type, value, line, column);
+		return new Token(type, content, line, column);
 	}
 
+	/**
+	 * Tokens completely determined by a single character.
+	 */
 	private static final Map<Character, TokenType> single_char_types = Map.of('.', PERIOD, ',', COMMA, '#', FUNC, '(', LPAREN, ')', RPAREN, '{', LBRACE, '}',
 			RBRACE);
 
+	/**
+	 * Keywords
+	 */
 	private static final Map<String, TokenType> keyword_types = Map.of("if", IF, "else", ELSE, "while", WHILE, "new", NEW);
 
+	/**
+	 * Read one character from the underlying Reader, advance line and column count as appropriate.
+	 * 
+	 * @throws IOException In case of an IOException in the underlying Reader.
+	 */
 	private void read() throws IOException
 	{
 		if(cur == '\n') {
@@ -93,6 +110,15 @@ public class Lexer implements TokenIterator
 		cur = source.read();
 	}
 
+	@Override
+	/**
+	 * Read and return one token from the source code, skipping over any whitespace.
+	 * 
+	 * @return The next token in the source code. If all source code has been read, <code>Token.EOF</code> is returned.
+	 * 
+	 * @throws IOException    In case an IOException occured while reading the source.
+	 * @throws ParseException If it was not possible to parse the next token.
+	 */
 	public Token next() throws IOException, ParseException
 	{
 		// skip whitespace
